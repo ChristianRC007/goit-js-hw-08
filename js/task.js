@@ -8,6 +8,8 @@ const refs = {
 }
 
 
+const originalImagesArray = gallery.map(el => el.original);
+const descriptionsArray = gallery.map(el => el.description);
 const galleryMarkup = gallery.reduce((acc, {original, preview, description}) => {
   return acc + `<li class="gallery__item">
   <a
@@ -29,7 +31,8 @@ refs.galleryList.insertAdjacentHTML('afterbegin', galleryMarkup)
 refs.galleryList.addEventListener('click', modalOpen);
 refs.lightboxRef.addEventListener('click', modalClose);
 refs.lightboxBtn.addEventListener('click', modalClose);
-window.addEventListener('keydown', onKeyPressModalClose)
+window.addEventListener('keydown', onKeyPressEvents)
+
   
 function modalOpen(e) {
 e.preventDefault();
@@ -56,3 +59,36 @@ function onKeyPressModalClose(e) {
   }
 }
 
+function onKeyPressEvents(e) {
+  onKeyPressModalClose(e)
+  onRightKeyPress(e)
+  onLeftKeyPress(e)
+}
+
+function onRightKeyPress(e) {
+  while (refs.lightboxRef.classList.contains('is-open')) {
+    if (e.key === 'ArrowRight') {
+      let indexOfCurrentImg = originalImagesArray.indexOf(refs.lightboxImgRef.src);
+       if (indexOfCurrentImg + 1 > originalImagesArray.length - 1) {
+        indexOfCurrentImg = -1
+      }
+      refs.lightboxImgRef.src = originalImagesArray[indexOfCurrentImg + 1]
+      refs.lightboxImgRef.alt = descriptionsArray[indexOfCurrentImg + 1]
+    }
+    break
+  }
+}
+
+function onLeftKeyPress(e) {
+  while (refs.lightboxRef.classList.contains('is-open')) {
+    if (e.key === 'ArrowLeft') {
+      let indexOfCurrentImg = originalImagesArray.indexOf(refs.lightboxImgRef.src);
+      if (indexOfCurrentImg - 1 < 0) {
+        indexOfCurrentImg = originalImagesArray.length
+      }
+      refs.lightboxImgRef.src = originalImagesArray[indexOfCurrentImg - 1]
+      refs.lightboxImgRef.alt = descriptionsArray[indexOfCurrentImg - 1]
+    }
+    break
+  }
+}
