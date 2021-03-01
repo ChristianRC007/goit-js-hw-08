@@ -7,11 +7,19 @@ const refs = {
   lightboxBtn: document.querySelector('button[data-action="close-lightbox"]'),
 }
 
-
 const originalImagesArray = gallery.map(el => el.original);
 const descriptionsArray = gallery.map(el => el.description);
-const galleryMarkup = gallery.reduce((acc, {original, preview, description}) => {
-  return acc + `<li class="gallery__item">
+
+refs.galleryList.insertAdjacentHTML('afterbegin', galleryMarkup(gallery))
+
+refs.galleryList.addEventListener('click', modalOpen);
+refs.lightboxRef.addEventListener('click', modalClose);
+refs.lightboxBtn.addEventListener('click', modalClose);
+window.addEventListener('keydown', onKeyPressEvents)
+
+function galleryMarkup(data) {
+  return data.reduce((acc, { original, preview, description }) => {
+    return acc + `<li class="gallery__item">
   <a
     class="gallery__link"
     href="${original}"
@@ -25,14 +33,7 @@ const galleryMarkup = gallery.reduce((acc, {original, preview, description}) => 
     </a>
     </li>`
   }, '')
-  
-refs.galleryList.insertAdjacentHTML('afterbegin', galleryMarkup)
-  
-refs.galleryList.addEventListener('click', modalOpen);
-refs.lightboxRef.addEventListener('click', modalClose);
-refs.lightboxBtn.addEventListener('click', modalClose);
-window.addEventListener('keydown', onKeyPressEvents)
-
+}
   
 function modalOpen(e) {
 e.preventDefault();
@@ -66,29 +67,29 @@ function onKeyPressEvents(e) {
 }
 
 function onRightKeyPress(e) {
-  while (refs.lightboxRef.classList.contains('is-open')) {
-    if (e.key === 'ArrowRight') {
-      let indexOfCurrentImg = originalImagesArray.indexOf(refs.lightboxImgRef.src);
-       if (indexOfCurrentImg + 1 > originalImagesArray.length - 1) {
-        indexOfCurrentImg = -1
+    
+  if (e.key === 'ArrowRight') {
+      let currentImgIndex = originalImagesArray.indexOf(refs.lightboxImgRef.src);
+       
+      if (currentImgIndex + 1 > originalImagesArray.length - 1) {
+        currentImgIndex = -1
       }
-      refs.lightboxImgRef.src = originalImagesArray[indexOfCurrentImg + 1]
-      refs.lightboxImgRef.alt = descriptionsArray[indexOfCurrentImg + 1]
+     
+      refs.lightboxImgRef.src = originalImagesArray[currentImgIndex + 1]
+      refs.lightboxImgRef.alt = descriptionsArray[currentImgIndex + 1]
     }
-    break
-  }
 }
 
 function onLeftKeyPress(e) {
-  while (refs.lightboxRef.classList.contains('is-open')) {
-    if (e.key === 'ArrowLeft') {
-      let indexOfCurrentImg = originalImagesArray.indexOf(refs.lightboxImgRef.src);
-      if (indexOfCurrentImg - 1 < 0) {
-        indexOfCurrentImg = originalImagesArray.length
+    
+  if (e.key === 'ArrowLeft') {
+      let currentImgIndex = originalImagesArray.indexOf(refs.lightboxImgRef.src);
+     
+    if (currentImgIndex - 1 < 0) {
+        currentImgIndex = originalImagesArray.length
       }
-      refs.lightboxImgRef.src = originalImagesArray[indexOfCurrentImg - 1]
-      refs.lightboxImgRef.alt = descriptionsArray[indexOfCurrentImg - 1]
+     
+      refs.lightboxImgRef.src = originalImagesArray[currentImgIndex - 1]
+      refs.lightboxImgRef.alt = descriptionsArray[currentImgIndex - 1]
     }
-    break
-  }
 }
