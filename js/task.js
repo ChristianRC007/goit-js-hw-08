@@ -98,6 +98,3 @@ function toRemoveClassAndAttributes() {
   refs.lightboxImgRef.src = '/';
   refs.lightboxImgRef.alt = '';
 }
-
-const fuck = 3;
-const fix = '32132';
